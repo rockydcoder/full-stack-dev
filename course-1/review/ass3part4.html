@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html>
+<head>
+<title>Matching Game</title>
+<style>
+  div {position:absolute; width:500px; height:500px;}
+  img {position:absolute}
+  #rightSide{left:500px; border-left: 3px solid black}
+  #level{font-weight:bold}
+</style>
+</head>
+
+<body id=theBody onload="generateFaces()">
+  <h1>Matching Game</h1>
+  <p>Click on the extra smiling face on the left.</p>
+  <p> The number of faces:</p>
+  <p id="level">5</p>
+  <div id="leftSide"></div>
+
+  <div id="rightSide"></div>
+
+<script>
+    var numberOfFaces = 5;
+    var theLeftSide = document.getElementById("leftSide");
+    var theRightSide = document.getElementById("rightSide");
+    var theBody = document.getElementsByTagName("body")[0];
+    var start = new Date().getTime();
+
+    function generateFaces(){
+
+      for (var i = 0; i < numberOfFaces; i++){
+        var smiley = document.createElement("img");
+        smiley.src = "http://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png";
+        var tops = Math.floor(Math.random() * 401);
+        var left = Math.floor(Math.random() * 401);
+        smiley.style.top = tops + "px";
+        smiley.style.left = left + "px";
+        theLeftSide.appendChild(smiley);
+        }
+
+      var leftSideImages = theLeftSide.cloneNode(true);
+      leftSideImages.removeChild(leftSideImages.lastChild);
+      theRightSide.appendChild(leftSideImages);
+      theLeftSide.lastChild.onclick = function nextLevel(event){
+              event.stopPropagation();
+              numberOfFaces += 5;
+              while(theLeftSide.firstChild)
+              theLeftSide.removeChild(theLeftSide.firstChild);
+              while(theRightSide.firstChild)
+              theRightSide.removeChild(theRightSide.firstChild);
+              generateFaces();
+              var newLevel = document.createElement("p"); //these lines of code tell how many smileys there are
+              var levelC = document.getElementById("level");
+              levelC.removeChild(levelC.lastChild);
+              levelC.appendChild(newLevel);
+              newLevel.innerHTML = numberOfFaces;
+            }
+    }
+
+    theBody.onclick = function gameOver() {
+        var end = new Date().getTime();
+        var time = Math.floor((end - start)/1000);
+        var cont = confirm("Game Over!\n\nThe game lasted for " + time +
+                          " seconds.\n\nYou reached the level with " + numberOfFaces +
+                          " smileys.\n\nClick 'OK' if you want to try again!");
+        if (cont == true){
+          while(theLeftSide.firstChild)
+          theLeftSide.removeChild(theLeftSide.firstChild);
+          while(theRightSide.firstChild)
+          theRightSide.removeChild(theRightSide.firstChild);
+          start = new Date().getTime();;
+          numberOfFaces = 5;
+          var newLevel = document.createElement("p"); //these lines of code tell how many smileys there are
+          var levelC = document.getElementById("level");
+          levelC.removeChild(levelC.lastChild);
+          levelC.appendChild(newLevel);
+          newLevel.innerHTML = numberOfFaces;
+          generateFaces();
+          }
+          else {
+            theBody.onclick = null;
+            theLeftSide.lastChild.onclick = null;
+          }
+    }
+</script>
+</body>
+</html>
